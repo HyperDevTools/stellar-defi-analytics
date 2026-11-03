@@ -1,11 +1,11 @@
-import { Server, Networks } from 'stellar-sdk';
+import { Horizon, Networks } from 'stellar-sdk';
 
 const HORIZON_URL =
   process.env.NEXT_PUBLIC_HORIZON_URL || 'https://horizon-testnet.stellar.org';
 const NETWORK =
   process.env.NEXT_PUBLIC_STELLAR_NETWORK === 'mainnet' ? Networks.PUBLIC : Networks.TESTNET;
 
-export const server = new Server(HORIZON_URL);
+export const server = new Horizon.Server(HORIZON_URL);
 
 export function getNetworkPassphrase(): string {
   return NETWORK;
