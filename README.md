@@ -1,6 +1,16 @@
 # Stellar DeFi Analytics 📊
 
+[![CI](https://github.com/HyperDevTools/stellar-defi-analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/HyperDevTools/stellar-defi-analytics/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Next.js](https://img.shields.io/badge/Next.js-14.0-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![GitHub issues](https://img.shields.io/github/issues/HyperDevTools/stellar-defi-analytics)](https://github.com/HyperDevTools/stellar-defi-analytics/issues)
+[![GitHub stars](https://img.shields.io/github/stars/HyperDevTools/stellar-defi-analytics)](https://github.com/HyperDevTools/stellar-defi-analytics/stargazers)
+
 An open-source analytics dashboard for Stellar DeFi protocols. Track liquidity pools, DEX volumes, lending protocols, and more with real-time data visualization.
+
+**Version:** 0.1.0 | [Changelog](CHANGELOG.md) | [API Docs](API.md)
 
 ## 🎯 Overview
 
@@ -164,6 +174,39 @@ npm run test:watch
 # Type checking
 npm run type-check
 ```
+
+## 🏗️ Build & Deploy
+
+### Development Build
+
+```bash
+npm run dev
+```
+
+The app will be available at http://localhost:3000
+
+### Production Build
+
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm start
+```
+
+### CI/CD
+
+This project uses GitHub Actions for continuous integration:
+
+- **Automated Testing**: Runs on every push and pull request
+- **Multi-Version Testing**: Tests against Node.js 18.x and 20.x
+- **Type Checking**: Ensures TypeScript correctness
+- **Linting**: Enforces code quality standards
+- **Security Scanning**: Checks for vulnerabilities with npm audit
+- **Build Verification**: Ensures the app builds successfully
+
+View the [CI configuration](.github/workflows/ci.yml) for details.
 
 ## 🎨 Customization
 

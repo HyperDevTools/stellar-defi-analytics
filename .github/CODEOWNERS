@@ -1,0 +1,23 @@
+# CODEOWNERS file for stellar-defi-analytics
+# This file defines individuals or teams responsible for code review
+
+# Global owners - require review for all changes
+* @HyperDevTools/maintainers
+
+# Security-sensitive files require additional review
+SECURITY.md @HyperDevTools/security-team
+.github/workflows/ @HyperDevTools/devops-team
+.github/dependabot.yml @HyperDevTools/devops-team
+
+# Component-specific ownership
+/components/ @HyperDevTools/frontend-team
+/lib/ @HyperDevTools/core-team
+/hooks/ @HyperDevTools/frontend-team
+
+# Configuration files
+package.json @HyperDevTools/maintainers
+tsconfig.json @HyperDevTools/maintainers
+next.config.js @HyperDevTools/maintainers
+
+# Documentation
+*.md @HyperDevTools/docs-team
