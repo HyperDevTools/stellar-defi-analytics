@@ -1,0 +1,62 @@
+{
+  "name": "stellar-defi-analytics",
+  "version": "0.1.0",
+  "description": "Open-source analytics dashboard for Stellar DeFi protocols",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "stellar",
+    "defi",
+    "analytics",
+    "dashboard",
+    "blockchain",
+    "cryptocurrency",
+    "data-visualization"
+  ],
+  "author": "HyperDevTools",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HyperDevTools/stellar-defi-analytics.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HyperDevTools/stellar-defi-analytics/issues"
+  },
+  "homepage": "https://github.com/HyperDevTools/stellar-defi-analytics#readme",
+  "dependencies": {
+    "next": "14.0.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "stellar-sdk": "^11.3.0",
+    "recharts": "^2.10.3",
+    "axios": "^1.6.2",
+    "swr": "^2.2.4",
+    "date-fns": "^3.0.6",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.1.5",
+    "autoprefixer": "^10.4.16",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.4",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.3.6",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
