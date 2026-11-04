@@ -1,3 +1,5 @@
+'use client';
+
 import { useTVL } from '@/hooks/useTVL';
 
 export function TVLCard() {
