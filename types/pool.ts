@@ -23,3 +23,28 @@ export interface LiquidityPosition {
   sharePercent: number;
   valueUSD: number;
 }
+
+export interface PoolAnalytics {
+  apy: {
+    current: number;
+    day7: number;
+    day30: number;
+    day90: number;
+    projected: number;
+  };
+  impermanentLoss: {
+    current: number;
+    historical: Array<{ timestamp: number; value: number }>;
+    netVsFees: number;
+  };
+  fees: {
+    total: number;
+    perLpToken: number;
+    breakdown: Array<{ period: string; fees: number; apr: number }>;
+  };
+  health: {
+    liquidityDepth: number;
+    volumeToLiquidityRatio: number;
+    averagePriceImpact: number;
+  };
+}
