@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Data provenance, metric notes, and prototype limitations for Stellar DeFi Analytics.">
+    <title>Stellar DeFi Analytics - Field notes</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --ink: #e9eef8;
+        --muted: #a1afc5;
+        --night: #101827;
+        --panel: #172337;
+        --line: #30425d;
+        --cyan: #75d8d1;
+        --gold: #f3cb83;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--night); color: var(--ink); line-height: 1.65; }
+      a { color: var(--cyan); }
+      .wrap { width: min(1120px, calc(100% - 40px)); margin: 0 auto; }
+      header { border-bottom: 1px solid var(--line); }
+      .bar { min-height: 72px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+      .brand { font-size: .88rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+      .brand a { color: var(--ink); text-decoration: none; }
+      nav { display: flex; flex-wrap: wrap; gap: 20px; font-size: .88rem; }
+      nav a { color: var(--muted); text-decoration: none; }
+      .hero { padding: 76px 0 66px; display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+      .eyebrow { color: var(--cyan); font-size: .76rem; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
+      h1 { margin: 14px 0; font: 700 clamp(2.6rem, 6vw, 5rem)/1.02 Georgia, "Times New Roman", serif; letter-spacing: -.04em; }
+      h2 { margin: 0 0 12px; font: 700 1.8rem/1.2 Georgia, "Times New Roman", serif; }
+      h3 { margin: 0 0 8px; font-size: 1.07rem; }
+      p { color: var(--muted); }
+      .lead { max-width: 610px; font-size: 1.12rem; }
+      .plot { position: relative; min-height: 280px; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: linear-gradient(160deg, #1d3046, #172337 68%); padding: 22px; }
+      .plot-label { color: var(--muted); font-size: .8rem; }
+      .plot svg { width: 100%; height: 190px; margin-top: 14px; }
+      .plot .gridline { stroke: #344a67; stroke-width: 1; }
+      .plot .trace { fill: none; stroke: var(--cyan); stroke-width: 3; }
+      .plot .shade { fill: url(#fade); }
+      .plot .note { position: absolute; bottom: 17px; right: 20px; color: var(--gold); font-size: .73rem; }
+      .notice { margin: 0 0 26px; border: 1px solid #907244; border-left: 4px solid var(--gold); background: #28261f; padding: 20px 24px; }
+      .notice strong { color: var(--gold); }
+      section { padding: 54px 0; border-top: 1px solid var(--line); }
+      .section-head { display: flex; justify-content: space-between; gap: 26px; align-items: end; margin-bottom: 26px; }
+      .section-head p { max-width: 530px; margin: 0; }
+      .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .card { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); padding: 22px; }
+      .status { display: inline-block; margin-bottom: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; color: var(--cyan); font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+      .status.sample { border-color: #907244; color: var(--gold); }
+      .metric { font: 700 1.15rem Georgia, serif; }
+      .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; counter-reset: stage; }
+      .step { border-top: 2px solid var(--cyan); padding: 16px 6px; counter-increment: stage; }
+      .step::before { content: "0" counter(stage); display: block; margin-bottom: 12px; color: var(--cyan); font-size: .78rem; letter-spacing: .1em; }
+      .step p { margin-bottom: 0; }
+      .codebox { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: #0b121e; padding: 20px; }
+      pre { margin: 0; color: #dce8f8; font: .88rem/1.7 ui-monospace, SFMono-Regular, Menlo, monospace; }
+      footer { margin-top: 25px; padding: 28px 0 42px; border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; }
+      @media (max-width: 760px) {
+        .hero { grid-template-columns: 1fr; padding: 54px 0; }
+        .cards, .steps { grid-template-columns: 1fr; }
+        .section-head { display: block; }
+        .bar { align-items: flex-start; flex-direction: column; padding: 16px 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="wrap bar">
+        <div class="brand"><a href="#top">Stellar / Field notes</a></div>
+        <nav aria-label="Main navigation">
+          <a href="#signals">Data signals</a>
+          <a href="#reading">How to read</a>
+          <a href="#setup">Run locally</a>
+          <a href="https://github.com/HyperDevTools/stellar-defi-analytics">GitHub</a>
+        </nav>
+      </div>
+    </header>
+    <main id="top" class="wrap">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Protocol metrics / field guide</div>
+          <h1>Separate on-chain signals from assumptions.</h1>
+          <p class="lead">A guide to the Stellar DeFi Analytics prototype: where its figures come from, what the metric modules intend to describe, and what is not ready to support a decision.</p>
+        </div>
+        <div class="plot">
+          <div class="plot-label">Illustrative series - no live market feed</div>
+          <svg viewBox="0 0 480 190" role="img" aria-label="Decorative, illustrative line chart with no live data">
+            <defs><linearGradient id="fade" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#75d8d1" stop-opacity=".28"/><stop offset="1" stop-color="#75d8d1" stop-opacity="0"/></linearGradient></defs>
+            <path class="gridline" d="M0 35H480M0 85H480M0 135H480M0 185H480"/>
+            <path class="shade" d="M0 145C50 128 70 150 112 108S171 120 207 94 260 121 304 70 366 97 405 44 456 63 480 27V190H0Z"/>
+            <path class="trace" d="M0 145C50 128 70 150 112 108S171 120 207 94 260 121 304 70 366 97 405 44 456 63 480 27"/>
+          </svg>
+          <div class="note">Illustration only - not a chart of measured values</div>
+        </div>
+      </div>
+
+      <aside class="notice" aria-label="Prototype data warning">
+        <strong>Prototype data warning:</strong> the current app does not provide verified, real-time protocol-wide analytics. TVL and asset-price functions return placeholders; portfolio results use sample trades; and the price-stream connection is not a live feed. Do not use displayed values for investment, tax, or accounting decisions.
+      </aside>
+
+      <section id="signals">
+        <div class="section-head">
+          <div><div class="eyebrow">01 / Data signals</div><h2>Trace each number to its source.</h2></div>
+          <p>Some account reads call Stellar Horizon; other modules currently return example data. The distinction matters more than a polished chart.</p>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <span class="status">Network read</span>
+            <h3>Account balances</h3>
+            <p>The Horizon server can load account balances. By default, the app points to Stellar testnet; use <code>NEXT_PUBLIC_HORIZON_URL</code> to select another endpoint.</p>
+            <a href="https://github.com/HyperDevTools/stellar-defi-analytics/blob/main/lib/stellar.ts">Inspect Horizon helper</a>
+          </article>
+          <article class="card">
+            <span class="status sample">Placeholder</span>
+            <h3>TVL and asset prices</h3>
+            <p><code>getTVL()</code> returns a fixed 1,000,000 and <code>getAssetPrice()</code> returns 1. These values are not calculated from protocol contracts, a DEX, or an oracle.</p>
+            <a href="https://github.com/HyperDevTools/stellar-defi-analytics/blob/main/lib/stellar.ts">Inspect placeholder functions</a>
+          </article>
+          <article class="card">
+            <span class="status sample">Sample inputs</span>
+            <h3>Portfolio performance</h3>
+            <p>The current wallet-performance helper uses hard-coded sample trades and prices. Its outputs are illustrative, not derived from the supplied wallet's transaction history.</p>
+            <a href="https://github.com/HyperDevTools/stellar-defi-analytics/blob/main/lib/analytics/portfolio.ts">Inspect portfolio module</a>
+          </article>
+          <article class="card">
+            <span class="status sample">Not live</span>
+            <h3>Streaming and exports</h3>
+            <p>The price-stream manager does not open a WebSocket yet. Verify export output before use; tax or accounting reports are not verified deliverables.</p>
+            <a href="https://github.com/HyperDevTools/stellar-defi-analytics/tree/main/lib">Inspect analytics modules</a>
+          </article>
+        </div>
+      </section>
+
+      <section id="reading">
+        <div class="section-head">
+          <div><div class="eyebrow">02 / Reading a metric</div><h2>Three checks before trusting a chart.</h2></div>
+          <p>A metric is only as useful as its definition, source, and timestamp. Treat those as first-class parts of the display.</p>
+        </div>
+        <div class="steps">
+          <article class="step"><h3>Find the source</h3><p>Identify the Horizon endpoint, contract, indexer, oracle, or static fixture behind the value. A constant is not an observation.</p></article>
+          <article class="step"><h3>Check the method</h3><p>Read the implementation and inputs. Sample trades and assumed prices cannot establish a wallet's actual return.</p></article>
+          <article class="step"><h3>Check the time</h3><p>Require a clear update timestamp and freshness policy before describing any feed as live or current.</p></article>
+        </div>
+      </section>
+
+      <section id="setup">
+        <div class="section-head">
+          <div><div class="eyebrow">03 / Run locally</div><h2>Explore the application safely.</h2></div>
+          <p>For development, keep the default network on testnet and never put secret keys or signing credentials in public environment variables.</p>
+        </div>
+        <div class="codebox"><pre><code>git clone https://github.com/HyperDevTools/stellar-defi-analytics.git
+cd stellar-defi-analytics
+npm install
+npm run dev</code></pre></div>
+        <p>Open <code>http://localhost:3000</code>. Read the <a href="https://github.com/HyperDevTools/stellar-defi-analytics/blob/main/API.md">API notes</a> and <a href="https://github.com/HyperDevTools/stellar-defi-analytics/blob/main/CONTRIBUTING.md">contribution guide</a>; validate any data pipeline independently before using its output.</p>
+      </section>
+    </main>
+    <footer><div class="wrap">Stellar DeFi Analytics | Prototype documentation | <a href="https://github.com/HyperDevTools/stellar-defi-analytics/blob/main/LICENSE">License</a></div></footer>
+  </body>
+</html>

@@ -10,6 +10,10 @@
 
 An open-source analytics dashboard for Stellar DeFi protocols. Track liquidity pools, DEX volumes, lending protocols, and more with real-time data visualization.
 
+**Documentation site:** [Stellar DeFi Analytics field guide](https://hyperdevtools.github.io/stellar-defi-analytics/)
+
+> **Prototype status:** account-balance reads can use Horizon, but TVL and asset prices currently use placeholders, portfolio results use sample trades, and the price stream is not live. Do not rely on current output for investment, tax, or accounting decisions.
+
 **Version:** 0.1.0 | [Changelog](CHANGELOG.md) | [API Docs](API.md)
 
 ## 🎯 Overview
