@@ -26,8 +26,13 @@ export interface ExportableTransaction {
 }
 
 function escapeCsvCell(value: unknown): string {
-  const str = String(value ?? '');
-  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+  const raw = String(value ?? '');
+  // Leading whitespace/control characters may be ignored by spreadsheets when
+  // determining whether a text cell starts a formula. Preserve numeric values.
+  const str = typeof value === 'string' && /^[\s\x00-\x1f]*[=+\-@]/u.test(raw)
+    ? `'${raw}`
+    : raw;
+  if (str.includes(',') || str.includes('"') || /[\x00-\x1f]/u.test(str)) {
     return `"${str.replace(/"/g, '""')}"`;
   }
   return str;
