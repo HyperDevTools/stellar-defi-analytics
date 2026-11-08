@@ -3,25 +3,24 @@ import { PoolAnalytics } from '@/types/pool';
 import { calculatePoolAnalytics } from '@/lib/analytics/pools';
 
 export function usePoolAnalytics(poolId: string, timeframe = '30d') {
-  const [analytics, setAnalytics] = useState<PoolAnalytics | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [result, setResult] = useState<{
+    poolId: string;
+    timeframe: string;
+    analytics: PoolAnalytics | null;
+    error: Error | null;
+  } | null>(null);
 
   useEffect(() => {
     let active = true;
-    setIsLoading(true);
     calculatePoolAnalytics(poolId, timeframe)
-      .then((res) => {
+      .then((analytics) => {
+        if (active) setResult({ poolId, timeframe, analytics, error: null });
+      })
+      .catch((cause: unknown) => {
         if (active) {
-          setAnalytics(res);
-          setError(null);
+          const error = cause instanceof Error ? cause : new Error(String(cause));
+          setResult({ poolId, timeframe, analytics: null, error });
         }
-      })
-      .catch((err) => {
-        if (active) setError(err as Error);
-      })
-      .finally(() => {
-        if (active) setIsLoading(false);
       });
 
     return () => {
@@ -29,5 +28,12 @@ export function usePoolAnalytics(poolId: string, timeframe = '30d') {
     };
   }, [poolId, timeframe]);
 
-  return { analytics, isLoading, error };
+  const currentResult =
+    result?.poolId === poolId && result.timeframe === timeframe ? result : null;
+
+  return {
+    analytics: currentResult?.analytics ?? null,
+    isLoading: currentResult === null,
+    error: currentResult?.error ?? null,
+  };
 }

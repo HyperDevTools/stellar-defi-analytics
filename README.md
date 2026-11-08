@@ -12,7 +12,7 @@ An open-source analytics dashboard for Stellar DeFi protocols. Track liquidity p
 
 **Documentation site:** [Stellar DeFi Analytics field guide](https://hyperdevtools.github.io/stellar-defi-analytics/)
 
-> **Prototype status:** account-balance reads can use Horizon, but TVL and asset prices currently use placeholders, portfolio results use sample trades, and the price stream is not live. Do not rely on current output for investment, tax, or accounting decisions.
+> **Prototype status:** account-balance reads can use Horizon, but TVL and asset prices currently use placeholders, portfolio results use sample trades, and the price stream is not live. A hosted interactive demo is not currently available; run the app locally using the instructions below. Do not rely on current output for investment, tax, or accounting decisions.
 
 **Version:** 0.1.0 | [Changelog](CHANGELOG.md) | [API Docs](API.md)
 
@@ -298,7 +298,6 @@ MIT License - see [LICENSE](LICENSE) for details
 
 ## 🔗 Links
 
-- [Live Demo](https://stellar-defi-analytics.vercel.app)
 - [Documentation](https://hyperdevtools.github.io/stellar-defi-analytics)
 - [Stellar DeFi Ecosystem](https://stellar.org/ecosystem)
 - [Issue Tracker](https://github.com/HyperDevTools/stellar-defi-analytics/issues)
