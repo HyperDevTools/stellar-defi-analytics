@@ -1,38 +1,51 @@
-import { DataExporter } from '@/lib/export/dataExporter';
+import { expect } from '@jest/globals';
+import { DataExporter, type ExportConfig } from '@/lib/export/dataExporter';
 
-describe('DataExporter (#7)', () => {
-  const exporter = new DataExporter();
-  const baseRange = {
+const config: ExportConfig = {
+  format: 'json',
+  dataType: 'transactions',
+  dateRange: {
     start: new Date('2026-11-01T00:00:00Z'),
     end: new Date('2026-11-10T00:00:00Z'),
-  };
+  },
+};
 
-  it('exports CSV, CoinTracker tax CSV, JSON, and PDF formats', async () => {
-    const data = await exporter.fetchData({
-      format: 'tax',
-      dataType: 'transactions',
-      dateRange: baseRange,
-    });
-    expect(data).toHaveLength(2);
-
-    const taxCsv = exporter.formatData(data, 'tax');
-    expect(taxCsv).toContain(
+describe('DataExporter', () => {
+  it('exports no synthetic records when no transactions were supplied', async () => {
+    const exporter = new DataExporter();
+    const data = await exporter.fetchData(config);
+    expect(data).toEqual([]);
+    expect(exporter.toJson(data)).toBe('[]');
+    expect(exporter.toCsv(data).split('\n')).toHaveLength(1);
+    expect(exporter.toTaxFormat(data)).toBe(
       'Date,Received Quantity,Received Currency,Sent Quantity,Sent Currency,Fee Amount,Fee Currency,Tag',
     );
-    expect(taxCsv).toContain('2026-11-03T12:00:00Z,1000,XLM,120,USDC,0.01,XLM,Trade');
+  });
 
-    const jsonStr = exporter.formatData(data, 'json');
-    expect(JSON.parse(jsonStr)).toHaveLength(2);
+  it('formats caller-supplied records and applies the configured filters', async () => {
+    const exporter = new DataExporter([
+      {
+        date: '2026-11-03T12:00:00Z',
+        receivedQuantity: 12,
+        receivedCurrency: 'XLM',
+        sentQuantity: 2,
+        sentCurrency: 'USDC',
+        feeAmount: 0.01,
+        feeCurrency: 'XLM',
+        tag: 'Trade',
+        protocol: 'Aquarius',
+      },
+    ]);
+    const data = await exporter.fetchData({ ...config, filters: { assets: ['xlm'] } });
+    expect(data).toHaveLength(1);
+    expect(exporter.toTaxFormat(data)).toContain('2026-11-03T12:00:00Z,12,XLM,2,USDC,0.01,XLM,Trade');
+    expect(JSON.parse(exporter.toJson(data))).toEqual(data);
+    await expect(exporter.fetchData({ ...config, filters: { assets: ['AQUA'] } })).resolves.toEqual([]);
+  });
 
-    const pdfStr = exporter.formatData(data, 'pdf', 'tax');
-    expect(pdfStr).toContain('%PDF-1.4');
-
-    const blob = await exporter.export({
-      format: 'csv',
-      dataType: 'transactions',
-      dateRange: baseRange,
-      filters: { assets: ['XLM'] },
-    });
-    expect(blob.size).toBeGreaterThan(20);
+  it('rejects PDF export with a clear error', async () => {
+    await expect(new DataExporter().export({ ...config, format: 'pdf' })).rejects.toThrow(
+      /PDF export is unavailable/,
+    );
   });
 });

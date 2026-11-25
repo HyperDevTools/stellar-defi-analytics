@@ -98,7 +98,7 @@
       </div>
 
       <aside class="notice" aria-label="Prototype data warning">
-        <strong>Prototype data warning:</strong> the current app does not provide verified, real-time protocol-wide analytics. TVL and asset-price functions return placeholders; portfolio results use sample trades; and the price-stream connection is not a live feed. Do not use displayed values for investment, tax, or accounting decisions.
+        <strong>Data coverage:</strong> the dashboard displays one page of Stellar liquidity pool reserves from Horizon. USD TVL and asset prices remain unavailable. Portfolio fixtures are illustrative, and the price stream is experimental.
       </aside>
 
       <section id="signals">
@@ -114,10 +114,10 @@
             <a href="https://github.com/HyperDevTools/stellar-defi-analytics/blob/main/lib/stellar.ts">Inspect Horizon helper</a>
           </article>
           <article class="card">
-            <span class="status sample">Placeholder</span>
-            <h3>TVL and asset prices</h3>
-            <p><code>getTVL()</code> returns a fixed 1,000,000 and <code>getAssetPrice()</code> returns 1. These values are not calculated from protocol contracts, a DEX, or an oracle.</p>
-            <a href="https://github.com/HyperDevTools/stellar-defi-analytics/blob/main/lib/stellar.ts">Inspect placeholder functions</a>
+            <span class="status">Horizon snapshot</span>
+            <h3>Liquidity pool reserves</h3>
+            <p>The dashboard shows raw reserves and shares with the Stellar network and observation time. USD valuations are unavailable until a provider is configured.</p>
+            <a href="https://github.com/HyperDevTools/stellar-defi-analytics/blob/main/lib/poolReserves.ts">Inspect the Horizon reader</a>
           </article>
           <article class="card">
             <span class="status sample">Sample inputs</span>
@@ -128,7 +128,7 @@
           <article class="card">
             <span class="status sample">Not live</span>
             <h3>Streaming and exports</h3>
-            <p>The price-stream manager does not open a WebSocket yet. Verify export output before use; tax or accounting reports are not verified deliverables.</p>
+            <p>The price-stream manager does not open a WebSocket yet. CSV and JSON exports use supplied transaction records, and PDF export is unavailable.</p>
             <a href="https://github.com/HyperDevTools/stellar-defi-analytics/tree/main/lib">Inspect analytics modules</a>
           </article>
         </div>
