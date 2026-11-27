@@ -12,28 +12,10 @@ export default function Home() {
           Open-source analytics dashboard for Stellar DeFi protocols
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <div className="p-6 border border-gray-300 rounded-lg hover:shadow-lg transition">
-            <h2 className="text-2xl font-semibold mb-2">Protocol Overview</h2>
-            <p className="text-gray-600">
-              Track TVL, volumes, and key metrics across all Stellar DeFi protocols
-            </p>
-          </div>
-
-          <div className="p-6 border border-gray-300 rounded-lg hover:shadow-lg transition">
-            <h2 className="text-2xl font-semibold mb-2">Liquidity Pools</h2>
-            <p className="text-gray-600">
-              Monitor liquidity pools, APYs, and LP positions in real-time
-            </p>
-          </div>
-
-          <div className="p-6 border border-gray-300 rounded-lg hover:shadow-lg transition">
-            <h2 className="text-2xl font-semibold mb-2">Portfolio Tracking</h2>
-            <p className="text-gray-600">
-              Track your DeFi positions and earnings across multiple protocols
-            </p>
-          </div>
-        </div>
+        <p className="text-center text-gray-600 mb-8">
+          Inspect the assets, reserves and issued shares of Stellar liquidity pools using Horizon
+          ledger data.
+        </p>
 
         <div className="text-center">
           <Link
