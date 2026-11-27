@@ -50,6 +50,7 @@ describe('DataExporter', () => {
   });
 
   it('neutralizes spreadsheet formulas in both CSV formats without modifying JSON or numbers', () => {
+    const exporter = new DataExporter();
     const transaction = {
       date: '2026-11-03T12:00:00Z',
       receivedQuantity: -12,
@@ -76,6 +77,7 @@ describe('DataExporter', () => {
   });
 
   it('preserves ordinary CSV text and quotes control-character formula prefixes', () => {
+    const exporter = new DataExporter();
     const record = {
       date: '2026-11-03T12:00:00Z',
       receivedQuantity: 1,
