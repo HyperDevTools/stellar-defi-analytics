@@ -42,30 +42,7 @@ export class DataExporter {
   private records: ExportableTransaction[];
 
   constructor(records?: ExportableTransaction[]) {
-    this.records = records ?? [
-      {
-        date: '2026-11-03T12:00:00Z',
-        receivedQuantity: 1000,
-        receivedCurrency: 'XLM',
-        sentQuantity: 120,
-        sentCurrency: 'USDC',
-        feeAmount: 0.01,
-        feeCurrency: 'XLM',
-        tag: 'Trade',
-        protocol: 'Aquarius',
-      },
-      {
-        date: '2026-11-04T15:30:00Z',
-        receivedQuantity: 45,
-        receivedCurrency: 'AQUA',
-        sentQuantity: 0,
-        sentCurrency: '',
-        feeAmount: 0.005,
-        feeCurrency: 'XLM',
-        tag: 'Reward',
-        protocol: 'Aquarius',
-      },
-    ];
+    this.records = records ?? [];
   }
 
   async export(config: ExportConfig): Promise<Blob> {
@@ -181,8 +158,9 @@ export class DataExporter {
     return JSON.stringify(data, null, 2);
   }
 
-  toPdf(data: ExportableTransaction[], template = 'performance'): string {
-    return `%PDF-1.4\n% Stellar DeFi Analytics Report (template=${template}, rows=${data.length})\n${this.toCsv(data)}\n%%EOF`;
+  toPdf(data: ExportableTransaction[], template?: string): never;
+  toPdf(): never {
+    throw new Error('PDF export is unavailable. Use CSV, JSON, or tax CSV.');
   }
 
   private createBlob(formatted: string, format: ExportConfig['format']): Blob {

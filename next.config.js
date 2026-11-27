@@ -2,7 +2,12 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['stellar.org'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'stellar.org',
+      },
+    ],
   },
 };
 

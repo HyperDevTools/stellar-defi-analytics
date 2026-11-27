@@ -2,322 +2,89 @@
 
 [![CI](https://github.com/HyperDevTools/stellar-defi-analytics/actions/workflows/ci.yml/badge.svg)](https://github.com/HyperDevTools/stellar-defi-analytics/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Next.js](https://img.shields.io/badge/Next.js-14.0-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![GitHub issues](https://img.shields.io/github/issues/HyperDevTools/stellar-defi-analytics)](https://github.com/HyperDevTools/stellar-defi-analytics/issues)
 [![GitHub stars](https://img.shields.io/github/stars/HyperDevTools/stellar-defi-analytics)](https://github.com/HyperDevTools/stellar-defi-analytics/stargazers)
 
-An open-source analytics dashboard for Stellar DeFi protocols. Track liquidity pools, DEX volumes, lending protocols, and more with real-time data visualization.
+A read-only dashboard for inspecting classic Stellar liquidity pool reserves from Horizon.
 
 **Documentation site:** [Stellar DeFi Analytics field guide](https://hyperdevtools.github.io/stellar-defi-analytics/)
 
-> **Prototype status:** account-balance reads can use Horizon, but TVL and asset prices currently use placeholders, portfolio results use sample trades, and the price stream is not live. Do not rely on current output for investment, tax, or accounting decisions.
+> The dashboard reads Stellar liquidity pool reserves from Horizon. USD TVL and asset prices show an unavailable state until a valuation provider is configured. Portfolio calculations and price-stream modules remain experimental.
 
 **Version:** 0.1.0 | [Changelog](CHANGELOG.md) | [API Docs](API.md)
 
-## 🎯 Overview
+## Overview
 
-Stellar DeFi Analytics provides comprehensive insights into the Stellar DeFi ecosystem:
-- **Real-time Metrics**: Live data from Stellar DeFi protocols
-- **Liquidity Tracking**: Monitor liquidity pools and LP positions
-- **DEX Analytics**: Trade volumes, prices, and market depth
-- **Protocol Metrics**: TVL, user counts, transaction volumes
-- **Historical Data**: Charts and trends over time
-- **Portfolio Tracking**: Track your DeFi positions across protocols
+- Inspect up to ten Stellar liquidity pools on testnet or mainnet, including raw reserve amounts, issued shares, and fees.
+- See the network reported by Horizon and the time the application read the pool snapshot.
+- Export caller-supplied transactions as CSV, JSON, or tax CSV. Empty inputs produce an empty JSON array or CSV headers without transaction rows.
 
-## 🚀 Features
+## Installation
 
-- 📈 **Interactive Charts** - Powered by Recharts with responsive design
-- 🔄 **Real-time Updates** - Live data with automatic refresh
-- 🎨 **Modern UI** - Built with Next.js 14 and Tailwind CSS
-- 📱 **Responsive** - Works seamlessly on desktop and mobile
-- 🌐 **Multi-Protocol Support** - Aggregates data from multiple Stellar DeFi protocols
-- 💾 **Data Export** - Export analytics data to CSV/JSON
-- 🔍 **Search & Filter** - Find specific pools, tokens, or protocols quickly
-- 🎯 **Custom Dashboards** - Create personalized views
-
-## 📦 Installation
+Use Node.js 22.12 or newer.
 
 ```bash
-# Clone the repository
 git clone https://github.com/HyperDevTools/stellar-defi-analytics.git
 cd stellar-defi-analytics
-
-# Install dependencies
-npm install
-# or
-yarn install
-# or
-pnpm install
-
-# Run development server
+npm ci
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the dashboard.
+Open [http://localhost:3000/dashboard](http://localhost:3000/dashboard).
 
-## 🔧 Configuration
+## Configuration
 
-Create a `.env.local` file in the root directory:
+The default is Stellar testnet. Copy `.env.example` to `.env.local` to select a different network or use a custom Horizon endpoint.
 
-```env
-# Stellar Network
-NEXT_PUBLIC_STELLAR_NETWORK=testnet
-NEXT_PUBLIC_HORIZON_URL=https://horizon-testnet.stellar.org
+## Verify the dashboard
 
-# Optional: RPC endpoints for faster data access
-NEXT_PUBLIC_SOROBAN_RPC_URL=https://soroban-testnet.stellar.org
+1. Start the app with `npm run dev` and open `/dashboard`.
+2. In **Liquidity pool reserves**, check the network, observation time, and amounts denominated in each pool's assets. Testnet can return an empty pool page.
+3. To inspect mainnet, set `NEXT_PUBLIC_STELLAR_NETWORK=mainnet`. Remove a testnet Horizon override or set it to `https://horizon.stellar.org`, then restart the app.
+4. Visit `/api/tvl`. It returns `tvl: null` and `status: "unavailable"` until a USD provider is available.
 
-# Analytics Configuration
-NEXT_PUBLIC_REFRESH_INTERVAL=30000
-NEXT_PUBLIC_HISTORICAL_DAYS=30
-```
-
-## 📚 Usage
-
-### Dashboard Overview
-
-The main dashboard provides:
-- Total Value Locked (TVL) across all protocols
-- 24h trading volumes
-- Top performing tokens
-- Recent transactions
-- Protocol breakdowns
-
-### Liquidity Pools
-
-View and analyze liquidity pools:
-```typescript
-import { useLiquidityPools } from '@/hooks/useLiquidityPools';
-
-export default function PoolsPage() {
-  const { pools, isLoading } = useLiquidityPools();
-
-  return (
-    <div>
-      {pools.map(pool => (
-        <PoolCard key={pool.id} pool={pool} />
-      ))}
-    </div>
-  );
-}
-```
-
-### DEX Analytics
-
-Track DEX trading activity:
-```typescript
-import { useDexVolume } from '@/hooks/useDexVolume';
-
-export default function DexPage() {
-  const { volume, history } = useDexVolume('24h');
-
-  return (
-    <VolumeChart data={history} totalVolume={volume} />
-  );
-}
-```
-
-### Portfolio Tracking
-
-Monitor your DeFi positions:
-```typescript
-import { usePortfolio } from '@/hooks/usePortfolio';
-
-export default function Portfolio() {
-  const { positions, totalValue } = usePortfolio(walletAddress);
-
-  return (
-    <PortfolioSummary positions={positions} total={totalValue} />
-  );
-}
-```
+The current dashboard reports one page of classic Stellar liquidity pools. Its reserves are in asset units. Aggregated USD valuations, protocol-wide coverage, historical APY, and wallet performance are future work.
 
 ## 🏗️ Architecture
 
-```
-stellar-defi-analytics/
-├── app/                    # Next.js app directory
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Home page
-│   ├── pools/             # Liquidity pools pages
-│   ├── dex/               # DEX analytics pages
-│   └── portfolio/         # Portfolio tracking pages
-├── components/            # React components
-│   ├── charts/           # Chart components
-│   ├── cards/            # Card components
-│   └── layout/           # Layout components
-├── hooks/                # Custom React hooks
-│   ├── useLiquidityPools.ts
-│   ├── useDexVolume.ts
-│   └── usePortfolio.ts
-├── lib/                  # Utility libraries
-│   ├── stellar.ts       # Stellar SDK utilities
-│   ├── api.ts           # API client
-│   └── formatters.ts    # Data formatters
-├── services/             # Data services
-│   ├── horizon.ts       # Horizon API service
-│   ├── soroban.ts       # Soroban RPC service
-│   └── protocols/       # Protocol-specific services
-└── types/               # TypeScript types
-    ├── pool.ts
-    ├── token.ts
-    └── transaction.ts
+```text
+app/dashboard/           Dashboard route
+app/api/tvl/             USD TVL availability endpoint
+components/              Dashboard and pool views
+lib/poolReserves.ts       Horizon snapshot parsing
+lib/export/              Transaction and tax exports
+lib/analytics/           Experimental analytics calculations
+__tests__/               Service, calculation, and UI tests
 ```
 
-## 🧪 Testing
+## Testing and build
 
 ```bash
-# Run tests
 npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Type checking
+npm run lint
 npm run type-check
-```
-
-## 🏗️ Build & Deploy
-
-### Development Build
-
-```bash
-npm run dev
-```
-
-The app will be available at http://localhost:3000
-
-### Production Build
-
-```bash
-# Build for production
 npm run build
-
-# Start production server
 npm start
 ```
 
-### CI/CD
+The [CI workflow](.github/workflows/ci.yml) checks Node.js 22 and 24.
 
-This project uses GitHub Actions for continuous integration:
+## Extending the app
 
-- **Automated Testing**: Runs on every push and pull request
-- **Multi-Version Testing**: Tests against Node.js 18.x and 20.x
-- **Type Checking**: Ensures TypeScript correctness
-- **Linting**: Enforces code quality standards
-- **Security Scanning**: Checks for vulnerabilities with npm audit
-- **Build Verification**: Ensures the app builds successfully
+The [Horizon reader](lib/poolReserves.ts) validates pool snapshots. The [dashboard view](components/PoolReserves.tsx) displays observed amounts and reports missing data. Additional data providers should attach their source, network, and observation time and keep unavailable values explicit.
 
-View the [CI configuration](.github/workflows/ci.yml) for details.
+## Contributing
 
-## 🎨 Customization
+See the [contribution guide](CONTRIBUTING.md) and [open issues](https://github.com/HyperDevTools/stellar-defi-analytics/issues). The [security policy](SECURITY.md) explains how to report security concerns.
 
-### Adding New Protocols
+## Roadmap
 
-1. Create a new service in `services/protocols/`:
+- Add a USD valuation provider with provenance and freshness checks.
+- Add pagination or asset filters for Horizon liquidity pools.
+- Expand protocol coverage and historical analytics.
 
-```typescript
-// services/protocols/myprotocol.ts
-export class MyProtocolService {
-  async getTVL(): Promise<number> {
-    // Fetch TVL data
-  }
+## License
 
-  async getPools(): Promise<Pool[]> {
-    // Fetch pools
-  }
-}
-```
-
-2. Register the protocol in `lib/protocols.ts`:
-
-```typescript
-import { MyProtocolService } from '@/services/protocols/myprotocol';
-
-export const protocols = {
-  myprotocol: new MyProtocolService(),
-  // ... other protocols
-};
-```
-
-### Custom Charts
-
-Create custom charts using Recharts:
-
-```typescript
-import { LineChart, Line, XAxis, YAxis } from 'recharts';
-
-export function CustomChart({ data }) {
-  return (
-    <LineChart data={data}>
-      <XAxis dataKey="time" />
-      <YAxis />
-      <Line type="monotone" dataKey="value" stroke="#8884d8" />
-    </LineChart>
-  );
-}
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Write/update tests
-5. Run linter and tests
-6. Submit a pull request
-
-## 📋 Roadmap
-
-- [ ] Lending protocol analytics
-- [ ] Yield farming metrics
-- [ ] Token price alerts
-- [ ] Advanced charting (candlesticks, depth charts)
-- [ ] Historical data export
-- [ ] Mobile app
-- [ ] Multi-chain support
-- [ ] Social features (shared dashboards)
-- [ ] API for third-party integrations
-
-## 🔐 Security
-
-- All data is read-only from public blockchain sources
-- No private keys are stored or transmitted
-- Wallet connections use standard Stellar wallet adapters
-- Security audits welcome - please report issues responsibly
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) for details
-
-## 🔗 Links
-
-- [Live Demo](https://stellar-defi-analytics.vercel.app)
-- [Documentation](https://hyperdevtools.github.io/stellar-defi-analytics)
-- [Stellar DeFi Ecosystem](https://stellar.org/ecosystem)
-- [Issue Tracker](https://github.com/HyperDevTools/stellar-defi-analytics/issues)
-
-## 💬 Support
-
-- Open an issue for bug reports or feature requests
-- Join our community discussions
-- Contribute to the codebase
-- Star the repo if you find it useful!
-
-## 🙏 Acknowledgments
-
-Built with:
-- [Next.js](https://nextjs.org/)
-- [Stellar SDK](https://github.com/stellar/js-stellar-sdk)
-- [Recharts](https://recharts.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-
----
-
-Made with ❤️ by HyperDevTools
+[MIT](LICENSE)
